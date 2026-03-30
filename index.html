@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linebet - التحقق الرسمي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --lb-green: #1d7e4d;
+            --lb-dark-bg: #0e3b25;
+            --lb-accent-yellow: #ffef00;
+            --lb-card-bg: #165d39;
+            --success-green: #25d366;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--lb-dark-bg); color: white; line-height: 1.6; overflow-x: hidden; }
+
+        header { background: var(--lb-green); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; cursor: pointer; }
+        
+        .sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0a2a1a; z-index: 2001; transition: 0.4s; box-shadow: -5px 0 15px rgba(0,0,0,0.5); padding-top: 60px; }
+        .sidebar.active { right: 0; }
+        .sidebar a { display: block; padding: 15px 25px; color: white; text-decoration: none; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .close-btn { position: absolute; top: 15px; left: 15px; font-size: 24px; cursor: pointer; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 2000; }
+
+        .ticker-news { background: #0a2a1a; padding: 12px 0; white-space: nowrap; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .ticker-wrap { display: inline-block; animation: ticker 180s linear infinite; }
+        .ticker-item { display: inline-block; padding: 0 40px; color: #2ecc71; font-weight: bold; font-size: 0.95rem; }
+        .ticker-item span { color: var(--lb-accent-yellow); }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        .page-section { display: none; padding: 40px 20px; min-height: 70vh; }
+        #main-page { display: block; padding-top: 0; }
+
+        .hero { padding: 60px 20px; text-align: center; background: linear-gradient(180deg, var(--lb-green) 0%, var(--lb-dark-bg) 100%); }
+        .check-card { background: var(--lb-card-bg); padding: 40px 25px; border-radius: 12px; max-width: 450px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .id-input { width: 100%; padding: 18px; border-radius: 6px; border: none; font-size: 1.4rem; text-align: center; margin-bottom: 20px; font-weight: bold; outline: none; }
+        .main-btn { width: 100%; padding: 18px; background: var(--lb-accent-yellow); color: black; border: none; border-radius: 6px; font-size: 1.2rem; font-weight: 900; cursor: pointer; }
+
+        .info-section { padding: 40px 20px; max-width: 900px; margin: 0 auto; }
+        .info-box { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 10px; margin-bottom: 25px; border-right: 5px solid var(--lb-green); text-align: right; }
+
+        .choice-card { background: var(--lb-card-bg); padding: 30px; border-radius: 15px; margin-bottom: 25px; max-width: 700px; margin-left: auto; margin-right: auto; text-align: right; }
+        .back-home { display: block; color: var(--lb-accent-yellow); text-decoration: none; font-size: 0.95rem; margin-bottom: 15px; cursor: pointer; font-weight: bold; }
+        .btn-link { display: block; width: 100%; padding: 15px; text-decoration: none; border-radius: 8px; font-weight: 900; margin-top: 15px; text-align: center; }
+        .btn-white { background: white; color: #0e3b25; }
+        .btn-green { background: #25d366; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        .custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 3000; padding: 20px; }
+        .modal-content { background: #fdfdfd; color: #333; width: 100%; max-width: 420px; border-radius: 30px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: right; }
+        .modal-content h3 { font-size: 1.5rem; margin-bottom: 15px; color: #000; font-weight: 700; }
+        .modal-footer { display: flex; justify-content: flex-start; gap: 45px; margin-top: 35px; padding-right: 15px; }
+        .modal-btn { background: none; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #5c7fb8; }
+
+        .bonus-result-card { background: white; color: #333; padding: 25px; border-radius: 20px; max-width: 500px; margin: 0 auto; text-align: right; border: 3px solid var(--lb-accent-yellow); }
+        .steps-box { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        .steps-box p { font-weight: 900; color: #0e3b25; margin-bottom: 10px; }
+        .steps-box li { margin-bottom: 8px; font-size: 0.95rem; list-style: none; position: relative; padding-right: 25px; }
+        .steps-box li::before { content: "\f00c"; font-family: "Font Awesome 5 Free"; font-weight: 900; position: absolute; right: 0; color: var(--lb-green); }
+
+        footer { background: #0a0a0a; padding: 60px 20px 20px; margin-top: 50px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 40px; max-width: 1100px; margin: 0 auto; text-align: right; }
+    </style>
+</head>
+<body>
+
+    <div class="custom-modal" id="downloadModal">
+        <div class="modal-content">
+            <h3>تنبيه هام قبل التحميل</h3>
+            <p>1. يجب حذف أي نسخة قديمة من التطبيق أولاً.</p>
+            <p>2. يجب إنشاء حساب جديد.</p>
+            <p>3. للحصول على <strong>مكافأة عشوائية من 100 جنيه إلى 10,000 جنيه في حسابك الأساسي</strong>.</p>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="confirmDownload()">موافق</button>
+                <button class="modal-btn cancel" onclick="closeModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <i class="fas fa-times close-btn" onclick="toggleMenu()"></i>
+        <a onclick="showPage('main'); toggleMenu()">الرئيسية</a>
+        <a onclick="openDownloadModal(); toggleMenu()">تحميل التطبيق</a>
+        <a onclick="showPage('contact'); toggleMenu()">اتصل بنا</a>
+        <a onclick="showPage('fees'); toggleMenu()">الرسوم والمكافآت</a>
+        <a onclick="showPage('security'); toggleMenu()">مركز الأمان</a>
+        <a onclick="showPage('privacy'); toggleMenu()">سياسة الخصوصية</a>
+    </div>
+
+    <header>
+        <a onclick="showPage('main')" class="logo">LINEBET</a>
+        <i class="fas fa-bars" style="font-size: 24px; cursor: pointer;" onclick="toggleMenu()"></i>
+    </header>
+
+    <div class="ticker-news">
+        <div class="ticker-wrap" id="live-ticker"></div>
+    </div>
+
+    <div id="content-area">
+        <div id="main-page" class="page-section">
+            <section class="hero">
+                <div class="check-card">
+                    <h2>تحقق من مكافآت حسابك</h2>
+                    <input type="number" class="id-input" id="uid" placeholder="أدخل ID الحساب">
+                    <button class="main-btn" onclick="checkID()">تحقق الآن</button>
+                </div>
+            </section>
+            <section class="info-section">
+                <div class="info-box"><h3>🛡️ فحص الأمان المتقدم</h3><p>نظامنا يضمن لك التحقق من حالة حسابك ومكافآتك المعلقة عبر نظام تشفير متطور.</p></div>
+                <div class="info-box"><h3>⚡ سحب وإيداع فوري</h3><p>عمليات السحب والإيداع في أقل من 5 دقائق على مدار الساعة.</p></div>
+                <div class="info-box"><h3>🎁 مكافأة 2026</h3><p>أدخل الـ ID الصحيح لتتمكن من استلام مكافأة عشوائية من 100 جنيه لـ 10,000 جنيه في حسابك الأساسي.</p></div>
+            </section>
+        </div>
+
+        <div id="bonus-page" class="page-section">
+            <div class="bonus-result-card">
+                <h2 style="color: #cc0000; text-align: center; margin-bottom: 15px;">عذراً، حسابك غير مؤهل حالياً! ⚠️</h2>
+                <div class="steps-box">
+                    <p>للحصول على مكافأة عشوائية من 100 جنيه لـ 10,000 جنيه على حسابك الأساسي، اتبع الآتي:</p>
+                    <ul>
+                        <li>حذف أي نسخة قديمة من التطبيق على جهازك.</li>
+                        <li>تحميل التطبيق من الرابط الرسمي بالأسفل.</li>
+                        <li>إنشاء حساب جديد تماماً (شرط أساسي).</li>
+                        <li>عند إتمام هذه الخطوات ستحصل فوراً على المكافأة.</li>
+                    </ul>
+                </div>
+                <p style="font-size: 0.9rem; margin-bottom: 15px; border-right: 3px solid var(--success-green); padding-right: 10px;">بعد إتمام الشروط، اضغط على زر "لقد أتممت الشروط" في المربع أسفل للتوجه للوكيل وتفعيل المكافأة.</p>
+                <a onclick="openDownloadModal()" class="btn-link btn-white" style="border:1px solid #ccc; cursor:pointer;">التحميل من الموقع الرسمي</a>
+                <a href="https://wa.me/+201069232178?text=لقد%20أتممت%20كل%20الشروط" class="btn-link btn-green">
+                    <i class="fab fa-whatsapp"></i> لقد أتممت كل الشروط
+                </a>
+            </div>
+        </div>
+
+        <div id="fees" class="page-section">
+            <div class="choice-card">
+                <a onclick="showPage('main')" class="back-home">← العودة للصفحة الرئيسية</a>
+                <h2>💸 الرسوم والمكافآت</h2>
+                <p>لا توجد رسوم. عند الشحن من خلال الوكيل الرسمي للواتساب، ستحصل على مكافأة من 2% لـ 10% إضافية.</p>
+                <a href="https://wa.me/+201069232178" class="btn-link btn-green"><i class="fab fa-whatsapp"></i> تواصل مع الوكيل للمكافأة</a>
+            </div>
+        </div>
+
+        <div id="contact" class="page-section">
+            <div class="choice-card" style="text-align:center;">
+                <a onclick="showPage('main')" class="back-home">← العودة للصفحة الرئيسية</a>
+                <h3>التحميل من الموقع الرسمي</h3>
+                <a onclick="openDownloadModal()" class="btn-link btn-white" style="cursor:pointer;">انتقل للتحميل الآن</a>
+            </div>
+            <div class="choice-card" style="text-align:center;">
+                <h3>الوكيل المعتمد</h3>
+                <a href="https://wa.me/+201069232178" class="btn-link btn-green"><i class="fab fa-whatsapp"></i> تواصل عبر واتساب</a>
+            </div>
+        </div>
+
+        <div id="security" class="page-section"><div class="choice-card"><a onclick="showPage('main')" class="back-home">← العودة للصفحة الرئيسية</a><h2>🛡️ مركز الأمان</h2><p>تشفير كامل لبياناتك وحماية لحسابك.</p></div></div>
+        <div id="privacy" class="page-section"><div class="choice-card"><a onclick="showPage('main')" class="back-home">← العودة للصفحة الرئيسية</a><h2>🔒 سياسة الخصوصية</h2><p>نلتزم بحماية خصوصية بياناتك بالكامل.</p></div></div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col"><h4>المساعدة</h4><ul><li><a onclick="showPage('contact')">اتصل بنا</a></li><li><a onclick="showPage('security')">الأمان</a></li></ul></div>
+            <div class="footer-col"><h4>القوانين</h4><ul><li><a onclick="showPage('fees')">الرسوم</a></li><li><a onclick="showPage('privacy')">الخصوصية</a></li></ul></div>
+        </div>
+        <div style="text-align:center; padding-top:30px; color:#555;">Copyright © 2019 - 2026 «Linebet»</div>
+    </footer>
+
+    <script>
+        const names = ["محمد أ.", "أحمد س.", "محمود ع.", "ياسين م.", "طه ر.", "سارة هـ.", "مي ع.", "إبراهيم خ.", "يوسف و.", "كريم ن.", "مصطفى ق.", "عبد الله م.", "هشام ج.", "عمر ف.", "نور د.", "زياد ت.", "مروان ب.", "حمزة ش.", "علي ل.", "حسن ن."];
+        const tickerContainer = document.getElementById('live-ticker');
+        
+        function buildTicker() {
+            names.sort(() => Math.random() - 0.5);
+            names.forEach(name => {
+                const amount = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+                const item = document.createElement('div');
+                item.className = 'ticker-item';
+                item.innerHTML = `💰 مبروك لـ <span>${name}</span> سحب مبلغ <span>${amount.toLocaleString()} ج.م</span>`;
+                tickerContainer.appendChild(item);
+            });
+        }
+        buildTicker();
+
+        function toggleMenu() {
+            const s = document.getElementById('sidebar');
+            const o = document.getElementById('overlay');
+            s.classList.toggle('active');
+            o.style.display = s.classList.contains('active') ? 'block' : 'none';
+        }
+
+        function showPage(p) {
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(s => s.style.display = 'none');
+            document.getElementById(p === 'main' ? 'main-page' : p).style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function openDownloadModal() { document.getElementById('downloadModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('downloadModal').style.display = 'none'; }
+        
+        // الرابط الجديد الذي زودتني به
+        function confirmDownload() { window.location.href = "Https://lb-aff.com/L?tag=d_3526623m_66803c_&site=3526623&ad=66803"; }
+
+        function checkID() {
+            if(document.getElementById('uid').value.length >= 9) {
+                showPage('bonus-page');
+            } else { alert("يرجى إدخال ID صحيح."); }
+        }
+    </script>
+</body>
+</html>
