@@ -13,6 +13,7 @@
             --lb-accent-yellow: #ffef00;
             --lb-card-bg: #165d39;
             --success-green: #25d366;
+            --error-red: #ff4d4d;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
@@ -37,9 +38,47 @@
         #main-page { display: block; padding-top: 0; }
 
         .hero { padding: 60px 20px; text-align: center; background: linear-gradient(180deg, var(--lb-green) 0%, var(--lb-dark-bg) 100%); }
-        .check-card { background: var(--lb-card-bg); padding: 40px 25px; border-radius: 12px; max-width: 450px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .check-card { background: var(--lb-card-bg); padding: 40px 25px; border-radius: 12px; max-width: 450px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; }
         .id-input { width: 100%; padding: 18px; border-radius: 6px; border: none; font-size: 1.4rem; text-align: center; margin-bottom: 20px; font-weight: bold; outline: none; }
-        .main-btn { width: 100%; padding: 18px; background: var(--lb-accent-yellow); color: black; border: none; border-radius: 6px; font-size: 1.2rem; font-weight: 900; cursor: pointer; }
+        .main-btn { width: 100%; padding: 18px; background: var(--lb-accent-yellow); color: black; border: none; border-radius: 6px; font-size: 1.2rem; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .main-btn:disabled { background: #999; cursor: not-allowed; opacity: 0.7; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+        }
+        .shake-effect { animation: shake 0.4s ease-in-out; }
+
+        #error-msg {
+            visibility: hidden;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #fff;
+            color: #d32f2f;
+            padding: 12px 20px;
+            border-radius: 50px;
+            margin-top: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-bottom: 3px solid var(--error-red);
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+
+        #error-msg.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #checking-status { display: none; margin-top: 20px; font-weight: bold; font-size: 1.1rem; color: var(--lb-accent-yellow); }
+        .spin-icon { animation: spin 1s linear infinite; display: inline-block; margin-left: 10px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         .info-section { padding: 40px 20px; max-width: 900px; margin: 0 auto; }
         .info-box { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 10px; margin-bottom: 25px; border-right: 5px solid var(--lb-green); text-align: right; }
@@ -102,6 +141,172 @@
     </div>
 
     <div id="content-area">
+        <div id="main-page" class="page-section">
+            <section class="hero">
+                <div class="check-card" id="card-box">
+                    <h2>تحقق من مكافآت حسابك</h2>
+                    <input type="number" class="id-input" id="uid" placeholder="أدخل ID الحساب">
+                    <button id="main-check-btn" class="main-btn" onclick="checkID()">تحقق الآن</button>
+                    
+                    <div id="error-msg"><i class="fas fa-exclamation-triangle"></i> الـ ID يجب أن يكون من 9 إلى 11 رقم</div>
+
+                    <div id="checking-status">
+                        <span id="status-icon" class="spin-icon"><i class="fas fa-sync-alt"></i></span>
+                        <span id="status-text">جاري فحص الحساب...</span>
+                    </div>
+                </div>
+            </section>
+            <section class="info-section">
+                <div class="info-box"><h3>🛡️ فحص الأمان المتقدم</h3><p>نظامنا يضمن لك التحقق من حالة حسابك ومكافآتك المعلقة عبر نظام تشفير متطور.</p></div>
+                <div class="info-box"><h3>⚡ سحب وإيداع فوري</h3><p>عمليات السحب والإيداع في أقل من 5 دقائق على مدار الساعة.</p></div>
+                <div class="info-box"><h3>🎁 مكافأة 2026</h3><p>أدخل الـ ID الصحيح لتتمكن من استلام مكافأة عشوائية من 100 جنيه لـ 10,000 جنيه في حسابك الأساسي.</p></div>
+            </section>
+        </div>
+
+        <div id="bonus-page" class="page-section">
+            <div class="bonus-result-card">
+                <h2 style="color: #cc0000; text-align: center; margin-bottom: 15px;">عذراً، حسابك غير مؤهل حالياً! ⚠️</h2>
+                <div class="steps-box">
+                    <p>للحصول على مكافأة عشوائية من 100 جنيه لـ 10,000 جنيه على حسابك الأساسي، اتبع الآتي:</p>
+                    <ul>
+                        <li>حذف أي نسخة قديمة من التطبيق على جهازك.</li>
+                        <li>تحميل التطبيق من الرابط الرسمي بالأسفل.</li>
+                        <li>إنشاء حساب جديد تماماً (شرط أساسي).</li>
+                        <li>عند إتمام هذه الخطوات ستحصل فوراً على المكافأة.</li>
+                    </ul>
+                </div>
+                <p style="font-size: 0.9rem; margin-bottom: 15px; border-right: 3px solid var(--success-green); padding-right: 10px;">بعد إتمام الشروط، اضغط على زر "لقد أتممت الشروط" في المربع أسفل للتوجه للوكيل وتفعيل المكافأة.</p>
+                <a onclick="openDownloadModal()" class="btn-link btn-white" style="border:1px solid #ccc; cursor:pointer;">التحميل من الموقع الرسمي</a>
+                <a href="https://wa.me/+201069232178?text=لقد%20أتممت%20كل%20الشروط" class="btn-link btn-green">
+                    <i class="fab fa-whatsapp"></i> لقد أتممت كل الشروط
+                </a>
+            </div>
+        </div>
+
+        <div id="fees" class="page-section">
+            <div class="choice-card">
+                <a onclick="showPage('main')" class="back-home">← العودة للصفحة الرئيسية</a>
+                <h2>💸 الرسوم والمكافآت</h2>
+                <p>لا توجد رسوم. عند الشحن من خلال الوكيل الرسمي للواتساب، ستحصل على مكافأة من 2% لـ 10% إضافية.</p>
+                <a href="https://wa.me/+201069232178" class="btn-link btn-green"><i class="fab fa-whatsapp"></i> تواصل مع الوكيل للمكافأة</a>
+            </div>
+        </div>
+
+        <div id="contact" class="page-section">
+            <div class="choice-card" style="text-align:center;">
+                <a onclick="showPage('main')" class="back-home">← العودة للصفحة الرئيسية</a>
+                <h3>التحميل من الموقع الرسمي</h3>
+                <a onclick="openDownloadModal()" class="btn-link btn-white" style="cursor:pointer;">انتقل للتحميل الآن</a>
+            </div>
+            <div class="choice-card" style="text-align:center;">
+                <h3>الوكيل المعتمد</h3>
+                <a href="https://wa.me/+201069232178" class="btn-link btn-green"><i class="fab fa-whatsapp"></i> تواصل عبر واتساب</a>
+            </div>
+        </div>
+
+        <div id="security" class="page-section"><div class="choice-card"><a onclick="showPage('main')" class="back-home">← العودة للصفحة الرئيسية</a><h2>🛡️ مركز الأمان</h2><p>تشفير كامل لبياناتك وحماية لحسابك.</p></div></div>
+        <div id="privacy" class="page-section"><div class="choice-card"><a onclick="showPage('main')" class="back-home">← العودة للصفحة الرئيسية</a><h2>🔒 سياسة الخصوصية</h2><p>نلتزم بحماية خصوصية بياناتك بالكامل.</p></div></div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col"><h4>المساعدة</h4><ul><li><a onclick="showPage('contact')">اتصل بنا</a></li><li><a onclick="showPage('security')">الأمان</a></li></ul></div>
+            <div class="footer-col"><h4>القوانين</h4><ul><li><a onclick="showPage('fees')">الرسوم</a></li><li><a onclick="showPage('privacy')">الخصوصية</a></li></ul></div>
+        </div>
+        <div style="text-align:center; padding-top:30px; color:#555;">Copyright © 2019 - 2026 «Linebet»</div>
+    </footer>
+
+    <script>
+        const names = ["محمد أ.", "أحمد س.", "محمود ع.", "ياسين م.", "طه ر.", "سارة هـ.", "مي ع.", "إبراهيم خ.", "يوسف و.", "كريم ن.", "مصطفى ق.", "عبد الله م.", "هشام ج.", "عمر ف.", "نور د.", "زياد ت.", "مروان ب.", "حمزة ش.", "علي ل.", "حسن ن."];
+        const tickerContainer = document.getElementById('live-ticker');
+        
+        function buildTicker() {
+            tickerContainer.innerHTML = "";
+            names.sort(() => Math.random() - 0.5);
+            names.forEach(name => {
+                const amount = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+                const item = document.createElement('div');
+                item.className = 'ticker-item';
+                item.innerHTML = `💰 مبروك لـ <span>${name}</span> سحب مبلغ <span>${amount.toLocaleString()} ج.م</span>`;
+                tickerContainer.appendChild(item);
+            });
+        }
+        buildTicker();
+
+        function toggleMenu() {
+            const s = document.getElementById('sidebar');
+            const o = document.getElementById('overlay');
+            s.classList.toggle('active');
+            o.style.display = s.classList.contains('active') ? 'block' : 'none';
+        }
+
+        function showPage(p) {
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(s => s.style.display = 'none');
+            document.getElementById(p === 'main' ? 'main-page' : p).style.display = 'block';
+            window.scrollTo(0,0);
+            
+            if(p === 'main') {
+                document.getElementById('main-check-btn').disabled = false;
+                document.getElementById('main-check-btn').innerText = "تحقق الآن";
+                document.getElementById('checking-status').style.display = 'none';
+                document.getElementById('error-msg').classList.remove('show');
+                // تصفية الأيقونة لحالتها الأصلية
+                document.getElementById('status-icon').className = 'spin-icon';
+                document.getElementById('status-icon').innerHTML = '<i class="fas fa-sync-alt"></i>';
+                document.getElementById('status-text').innerText = "جاري فحص الحساب...";
+            }
+        }
+
+        function openDownloadModal() { document.getElementById('downloadModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('downloadModal').style.display = 'none'; }
+        function confirmDownload() { window.location.href = "Https://lb-aff.com/L?tag=d_3526623m_66803c_&site=3526623&ad=66803"; }
+
+        let errorTimeout;
+
+        function checkID() {
+            const uidInput = document.getElementById('uid');
+            const btn = document.getElementById('main-check-btn');
+            const statusDiv = document.getElementById('checking-status');
+            const statusText = document.getElementById('status-text');
+            const statusIcon = document.getElementById('status-icon');
+            const errorDiv = document.getElementById('error-msg');
+            const cardBox = document.getElementById('card-box');
+
+            errorDiv.classList.remove('show');
+            cardBox.classList.remove('shake-effect');
+            clearTimeout(errorTimeout);
+
+            const valLen = uidInput.value.length;
+            if(valLen >= 9 && valLen <= 11) {
+                btn.disabled = true;
+                btn.innerText = "جاري الفحص...";
+                statusDiv.style.display = 'block';
+
+                // تم تعديل الوقت هنا لـ 5000 ملي ثانية (5 ثوانٍ)
+                setTimeout(function() {
+                    statusIcon.className = ''; 
+                    statusIcon.innerHTML = '<i class="fas fa-check-circle" style="color:#2ecc71;"></i>';
+                    statusText.innerText = "تم التحقق بنجاح!";
+                    
+                    setTimeout(function() { 
+                        showPage('bonus-page'); 
+                    }, 1000);
+                }, 5000); 
+
+            } else { 
+                errorDiv.classList.add('show');
+                cardBox.classList.add('shake-effect');
+                setTimeout(() => { cardBox.classList.remove('shake-effect'); }, 400);
+
+                errorTimeout = setTimeout(() => {
+                    errorDiv.classList.remove('show');
+                }, 6000);
+            }
+        }
+    </script>
+</body>
+</html>
         <div id="main-page" class="page-section">
             <section class="hero">
                 <div class="check-card">
